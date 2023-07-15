@@ -24,7 +24,7 @@ export function Home() {
       firestore()
         .collection("posts")
         .orderBy("created", "desc")
-        .limit(10)
+        .limit(5)
         .get()
         .then((snapshot) => {
           setPosts([]);
@@ -50,7 +50,7 @@ export function Home() {
     firestore()
       .collection("posts")
       .orderBy("created", "desc")
-      .limit(10)
+      .limit(5)
       .get()
       .then((snapshot) => {
         setPosts([]);
@@ -68,6 +68,34 @@ export function Home() {
       });
     setLoadingRefresh(false);
   }
+
+  async function getListPosts() {
+    if (emptyList) {
+      setLoading(false);
+      return null;
+    }
+    if (loading) return;
+    firestore()
+      .collection("posts")
+      .orderBy("created", "desc")
+      .limit(5)
+      .startAfter(lastItem)
+      .get()
+      .then((snapshot) => {
+        const postList = [];
+        snapshot.docs.map((u) => {
+          postList.push({
+            ...u.data(),
+            id: u.id,
+          });
+        });
+        setEmptyList(!!snapshot.empty);
+        setLastItem(snapshot.docs[snapshot.docs.length - 1]);
+        setPosts((oldPosts) => [...oldPosts, ...postList]);
+        setLoading(false);
+      });
+  }
+
   function handleNavigateToNewPost() {
     navigation.navigate("NewPost" as never);
   }
@@ -87,6 +115,8 @@ export function Home() {
         renderItem={({ item }) => <PostsList data={item} userId={user?.uid} />}
         refreshing={loadingRefresh}
         onRefresh={handleRefreshPosts}
+        onEndReached={() => getListPosts()}
+        onEndReachedThreshold={0.1}
       />
       <ButtonPost onPress={handleNavigateToNewPost}>
         <Feather name="edit-2" color="#fff" size={25} />
