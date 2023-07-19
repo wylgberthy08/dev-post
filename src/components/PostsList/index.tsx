@@ -12,6 +12,7 @@ import {
   Name,
   TimePost,
 } from "./styles";
+import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { format, formatDistance } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -25,12 +26,14 @@ export interface PostProps {
     created: { nanoseconds: number; seconds: number };
     id: string;
     likes: number;
+    userId: string;
   };
   userId: string;
 }
 
 export function PostsList({ data, userId }: PostProps) {
   const [likePost, setLikePost] = useState(data?.likes);
+  const navigation = useNavigation();
   function formatTimePost() {
     const datePost = new Date(data.created.seconds * 1000);
     return formatDistance(new Date(), datePost, {
@@ -76,9 +79,17 @@ export function PostsList({ data, userId }: PostProps) {
         setLikePost(likes + 1);
       });
   }
+
   return (
     <Container>
-      <Header>
+      <Header
+        onPress={() =>
+          navigation.navigate("PostsUser", {
+            title: data.autor,
+            userId: data.userId,
+          })
+        }
+      >
         {data.avatarUrl && <Avatar source={{ uri: data.avatarUrl }} />}
         {!data.avatarUrl && (
           <Avatar source={require("../../assets/avatar.png")} />
