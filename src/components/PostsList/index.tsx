@@ -15,8 +15,9 @@ import {
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { format, formatDistance } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import firestore from "@react-native-firebase/firestore";
 
-interface PostProps {
+export interface PostProps {
   data: {
     autor: string;
     avatarUrl: string | null;
@@ -35,7 +36,45 @@ export function PostsList({ data, userId }: PostProps) {
     return formatDistance(new Date(), datePost, {
       locale: ptBR,
     });
-    // console.log();
+  }
+
+  async function handleLikePost(id: string, likes: number) {
+    // console.log("id", id, "likes", likes);
+    const docId = `${userId}_${id}`;
+    // checar se o post já foi curtido
+    const doc = await firestore().collection("likes").doc(docId).get();
+
+    if (doc.exists) {
+      await firestore()
+        .collection("posts")
+        .doc(id)
+        .update({
+          likes: likes - 1,
+        });
+      await firestore()
+        .collection("likes")
+        .doc(docId)
+        .delete()
+        .then(() => {
+          setLikePost(likes - 1);
+        });
+      return;
+    }
+
+    await firestore().collection("likes").doc(docId).set({
+      postId: id,
+      userId: userId,
+    });
+
+    await firestore()
+      .collection("posts")
+      .doc(id)
+      .update({
+        likes: likes + 1,
+      })
+      .then(() => {
+        setLikePost(likes + 1);
+      });
   }
   return (
     <Container>
@@ -51,7 +90,7 @@ export function PostsList({ data, userId }: PostProps) {
       </ContentView>
 
       <Actions>
-        <LikesButton>
+        <LikesButton onPress={() => handleLikePost(data.id, likePost)}>
           {likePost !== 0 && <Likes>{likePost}</Likes>}
 
           <MaterialCommunityIcons

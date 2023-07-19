@@ -7,10 +7,10 @@ import { Header } from "../../components/Header";
 import { Text, View } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import { ActivityIndicator } from "react-native";
-import { PostsList } from "../../components/PostsList";
+import { PostProps, PostsList } from "../../components/PostsList";
 
 export function Home() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<PostProps[]>();
   const [loading, setLoading] = useState(true);
   const [loadingRefresh, setLoadingRefresh] = useState(false);
   const [lastItem, setLastItem] = useState("");
@@ -28,7 +28,7 @@ export function Home() {
         .get()
         .then((snapshot) => {
           setPosts([]);
-          const postList = [];
+          const postList = [] as any[];
           snapshot.docs.map((u) => {
             postList.push({
               ...u.data(),
@@ -37,7 +37,7 @@ export function Home() {
           });
           setEmptyList(!!snapshot.empty);
           setPosts(postList);
-          setLastItem(snapshot.docs[snapshot.docs.length - 1]);
+          setLastItem(snapshot.docs[snapshot.docs.length - 1] as any);
           setLoading(false);
         });
     }
@@ -54,7 +54,7 @@ export function Home() {
       .get()
       .then((snapshot) => {
         setPosts([]);
-        const postList = [];
+        const postList = [] as any;
         snapshot.docs.map((u) => {
           postList.push({
             ...u.data(),
@@ -63,7 +63,7 @@ export function Home() {
         });
         setEmptyList(false);
         setPosts(postList);
-        setLastItem(snapshot.docs[snapshot.docs.length - 1]);
+        setLastItem(snapshot.docs[snapshot.docs.length - 1] as any);
         setLoading(false);
       });
     setLoadingRefresh(false);
@@ -82,7 +82,7 @@ export function Home() {
       .startAfter(lastItem)
       .get()
       .then((snapshot) => {
-        const postList = [];
+        const postList = [] as any;
         snapshot.docs.map((u) => {
           postList.push({
             ...u.data(),
@@ -90,8 +90,8 @@ export function Home() {
           });
         });
         setEmptyList(!!snapshot.empty);
-        setLastItem(snapshot.docs[snapshot.docs.length - 1]);
-        setPosts((oldPosts) => [...oldPosts, ...postList]);
+        setLastItem(snapshot.docs[snapshot.docs.length - 1] as any);
+        setPosts((oldPosts) => [...(oldPosts ?? ""), ...postList]);
         setLoading(false);
       });
   }
