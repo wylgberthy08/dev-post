@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import Feather from "react-native-vector-icons/Feather";
 import { ButtonPost, Container, ListPost, Title } from "./styles";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -19,31 +19,37 @@ export function Home() {
   const navigation = useNavigation();
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    function fetchPosts() {
-      firestore()
-        .collection("posts")
-        .orderBy("created", "desc")
-        .limit(5)
-        .get()
-        .then((snapshot) => {
-          setPosts([]);
-          const postList = [] as any[];
-          snapshot.docs.map((u) => {
-            postList.push({
-              ...u.data(),
-              id: u.id,
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      function fetchPosts() {
+        firestore()
+          .collection("posts")
+          .orderBy("created", "desc")
+          .limit(5)
+          .get()
+          .then((snapshot) => {
+            setPosts([]);
+            const postList = [] as any[];
+            snapshot.docs.map((u) => {
+              postList.push({
+                ...u.data(),
+                id: u.id,
+              });
             });
+            setEmptyList(!!snapshot.empty);
+            setPosts(postList);
+            setLastItem(snapshot.docs[snapshot.docs.length - 1] as any);
+            setLoading(false);
           });
-          setEmptyList(!!snapshot.empty);
-          setPosts(postList);
-          setLastItem(snapshot.docs[snapshot.docs.length - 1] as any);
-          setLoading(false);
-        });
-    }
-    fetchPosts();
-    console.log("renderizou!!");
-  }, []);
+      }
+      fetchPosts();
+      return () => {
+        isActive = false;
+      };
+    }, [])
+   );
 
   async function handleRefreshPosts() {
     setLoadingRefresh(true);
