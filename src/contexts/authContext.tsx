@@ -89,7 +89,6 @@ export function AuthProvider({ children }: Props) {
           .doc(uid)
           .get();
 
-        // console.log(userProfile.data()?.name);
         let data = {
           uid: uid,
           name: userProfile.data()?.name,
