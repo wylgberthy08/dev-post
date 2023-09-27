@@ -16,11 +16,13 @@ interface UserProps {
 interface ResponseContext {
   signed: boolean;
   loading: boolean;
-  user:UserProps | null;
+  user: UserProps | null;
   loadingAuth: boolean;
   signOut: () => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
+  setUser: () => void;
+  storageUser: () => void;
 }
 export const AuthContext = createContext<ResponseContext>(
   {} as ResponseContext
@@ -116,7 +118,17 @@ export function AuthProvider({ children }: Props) {
   }
   return (
     <AuthContext.Provider
-      value={{ signed: !!user, signUp, signIn,signOut, loadingAuth, loading, user }}
+      value={{
+        signed: !!user,
+        signUp,
+        signIn,
+        signOut,
+        loadingAuth,
+        loading,
+        user,
+        setUser,
+        storageUser,
+      }}
     >
       {children}
     </AuthContext.Provider>
