@@ -43,7 +43,6 @@ export function AuthProvider({ children }: Props) {
       setLoading(false);
     }
     loadStorage();
-    console.log("renderizou");
   }, []);
 
   async function signUp(email: string, password: string, name: string) {
@@ -106,7 +105,6 @@ export function AuthProvider({ children }: Props) {
   }
 
   async function signOut() {
-    console.log("teste");
     await auth().signOut();
     await AsyncStorage.clear().then(() => {
       setUser(null);

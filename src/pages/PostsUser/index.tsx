@@ -50,7 +50,6 @@ export function PostsUser() {
           });
           if (isActive) {
             setPosts(postList);
-            console.log(postList);
             setLoading(false);
           }
         });

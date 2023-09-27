@@ -48,7 +48,6 @@ export function NewPosts() {
       })
       .then(() => {
         setPost("");
-        console.log("Post criado!!");
       })
       .catch((err) => {
         console.log("Erro ao criar o post ", err);
