@@ -33,6 +33,20 @@ O DevPost é um aplicativo desenvolvido em React Native que oferece uma platafor
 
 ---
 
+## Telas
+
+ ![Alt text](https://raw.githubusercontent.com/wylgberthy08/dev-post/main/src/screenshot/telas.png)
+
+## Tecnologias
+ React native <br>
+ Typescript <br>
+ javascript <br>
+ styled-components <br>
+ Firebase: (Firebase-auth, Firestore, Storage) <br>
+ React-navigation <br>
+ Date-fns
+ 
+
 ## Instalação
 
 Siga os passos abaixo para configurar e executar o projeto localmente:
@@ -58,17 +72,4 @@ yarn start
 ```bash
 yarn android
 ```
-## Tecnologias
- React native <br>
- Typescript <br>
- javascript <br>
- styled-components <br>
- Firebase: (Firebase-auth, Firestore, Storage) <br>
- React-navigation <br>
- Date-fns
- 
- 
 
-## Telas
-
- ![Alt text]()
